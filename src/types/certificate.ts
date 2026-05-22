@@ -19,6 +19,7 @@ export interface CertificateData {
   documentNumber: string;
   courseName: string;
   courseDescription: string;
+  certType: string;
   institution: string;
   duration: string;
   startDate: string;
@@ -59,6 +60,7 @@ export const defaultCertificateData: CertificateData = {
   endDate: "2025-12-15",
   issueDate: "2025-12-20",
   certificateNumber: "CERT-2025-001",
+  certType: "formación profesional",
   signerName: "Dr. María González",
   signerTitle: "Directora General",
   signatureImage: null,
