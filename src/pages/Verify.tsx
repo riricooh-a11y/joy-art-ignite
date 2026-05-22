@@ -26,14 +26,12 @@ const Verify = () => {
     const fetchCertificate = async () => {
       if (!code) { setNotFound(true); setLoading(false); return; }
       const { data, error } = await supabase
-        .from("certificates")
-        .select("*")
-        .eq("verification_code", code)
-        .maybeSingle();
-      if (error || !data) {
+        .rpc("verify_certificate", { _code: code });
+      const row = Array.isArray(data) ? data[0] : data;
+      if (error || !row) {
         setNotFound(true);
       } else {
-        setCertificate(data);
+        setCertificate(row);
       }
       setLoading(false);
     };
