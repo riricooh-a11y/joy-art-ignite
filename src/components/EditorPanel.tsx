@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, Image, PenTool, LayoutTemplate, Type, Square, QrCode, Plus, Trash2, Move, Users, Sparkles, Loader2 } from "lucide-react";
+import { Upload, Image, PenTool, LayoutTemplate, Type, Square, QrCode, Plus, Trash2, Move, Users, Sparkles, Loader2, Palette } from "lucide-react";
 import type { CertificateData, SealItem, SignerItem } from "@/types/certificate";
 import { presetTemplates } from "@/types/certificate";
 import { supabase } from "@/integrations/supabase/client";
