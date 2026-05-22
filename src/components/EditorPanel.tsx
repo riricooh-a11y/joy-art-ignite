@@ -7,9 +7,12 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, Image, PenTool, Stamp, Palette, LayoutTemplate, Type, Square, QrCode, Plus, Trash2, Move, Users } from "lucide-react";
+import { Upload, Image, PenTool, LayoutTemplate, Type, Square, QrCode, Plus, Trash2, Move, Users, Sparkles, Loader2 } from "lucide-react";
 import type { CertificateData, SealItem, SignerItem } from "@/types/certificate";
 import { presetTemplates } from "@/types/certificate";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface EditorPanelProps {
   data: CertificateData;
@@ -22,6 +25,8 @@ const FONT_OPTIONS = [
   { value: "Cormorant Garamond", label: "Cormorant Garamond" },
   { value: "Cinzel", label: "Cinzel" },
   { value: "Montserrat", label: "Montserrat" },
+  { value: "Raleway", label: "Raleway" },
+  { value: "IM Fell English", label: "IM Fell English" },
   { value: "Roboto", label: "Roboto" },
   { value: "Great Vibes", label: "Great Vibes" },
 ];
@@ -40,6 +45,35 @@ const EditorPanel: React.FC<EditorPanelProps> = ({ data, onChange }) => {
   const logoRef = useRef<HTMLInputElement>(null);
   const bgImageRef = useRef<HTMLInputElement>(null);
   const newSealRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const handleAIGenerate = async () => {
+    if (!aiPrompt.trim()) return;
+    setAiLoading(true);
+    try {
+      const { data: res, error } = await supabase.functions.invoke("cert-ai", {
+        body: { prompt: aiPrompt },
+      });
+      if (error) throw error;
+      if (res?.error) throw new Error(res.error);
+      onChange({
+        ...data,
+        courseDescription: res.courseDescription || data.courseDescription,
+        certType: res.certType || data.certType,
+        courseName: res.suggestedTitle || data.courseName,
+        institution: res.suggestedInstitution || data.institution,
+        duration: res.suggestedDuration || data.duration,
+      });
+      toast({ title: "✓ Texto generado", description: "Los campos del certificado fueron actualizados." });
+      setAiPrompt("");
+    } catch (e: any) {
+      toast({ title: "Error de IA", description: e.message, variant: "destructive" });
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const update = (field: keyof CertificateData, value: any) => {
     onChange({ ...data, [field]: value });
@@ -69,6 +103,34 @@ const EditorPanel: React.FC<EditorPanelProps> = ({ data, onChange }) => {
           Complete los campos para personalizar su certificado
         </p>
       </div>
+
+      <Separator />
+
+      {/* Asistente IA */}
+      <section className="space-y-3 rounded-lg border border-gold/30 bg-gradient-to-br from-card to-accent/40 p-4">
+        <h3 className="text-sm font-semibold uppercase tracking-wider flex items-center gap-2 text-gold">
+          <Sparkles className="w-4 h-4" /> Asistente IA
+        </h3>
+        <p className="text-xs text-muted-foreground">
+          Describe el curso o evento y la IA genera el texto formal del certificado.
+        </p>
+        <Textarea
+          rows={3}
+          value={aiPrompt}
+          onChange={(e) => setAiPrompt(e.target.value)}
+          placeholder='Ej: "Curso de primeros auxilios de 8 horas para enfermeros del hospital..."'
+          className="text-sm"
+        />
+        <Button
+          onClick={handleAIGenerate}
+          disabled={aiLoading || !aiPrompt.trim()}
+          size="sm"
+          className="w-full bg-gold hover:bg-gold-dark text-secondary-foreground"
+        >
+          {aiLoading ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Generando…</>)
+            : (<><Sparkles className="w-4 h-4 mr-2" /> Generar texto con IA</>)}
+        </Button>
+      </section>
 
       <Separator />
 
@@ -195,6 +257,11 @@ const EditorPanel: React.FC<EditorPanelProps> = ({ data, onChange }) => {
         <div className="space-y-2">
           <Label htmlFor="courseName">Nombre del Curso</Label>
           <Input id="courseName" value={data.courseName} onChange={(e) => update("courseName", e.target.value)} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="certType">Tipo de Certificado</Label>
+          <Input id="certType" value={data.certType ?? ""} placeholder="formación profesional"
+            onChange={(e) => update("certType", e.target.value)} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="courseDescription">Descripción</Label>
