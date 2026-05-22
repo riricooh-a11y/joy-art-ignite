@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Verify from "./pages/Verify";
 import Admin from "./pages/Admin";
+import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,7 +24,8 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/verify/:code" element={<Verify />} />
             <Route path="/admin" element={<Admin />} />
-            <Route path="/" element={<Index />} />
+            <Route path="/app" element={<Index />} />
+            <Route path="/" element={<Landing />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
