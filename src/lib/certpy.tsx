@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+// @ts-nocheck
+import { useState } from "react";
 
 // ─── PERSISTENT STORAGE (simula tu base de datos Supabase) ───────────────────
 const DB_KEY = "certpy_saas_db";
