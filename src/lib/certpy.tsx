@@ -54,14 +54,14 @@ const INITIAL_DB = {
   },
 };
 
-function loadDB() {
+export function loadDB() {
   try {
     const raw = localStorage.getItem(DB_KEY);
     if (raw) return JSON.parse(raw);
   } catch {}
   return JSON.parse(JSON.stringify(INITIAL_DB));
 }
-function saveDB(db) {
+export function saveDB(db) {
   try { localStorage.setItem(DB_KEY, JSON.stringify(db)); } catch {}
 }
 
@@ -164,7 +164,7 @@ function Btn({ children, onClick, color=C.gold, outline=false, small=false, disa
 }
 
 // ─── LANDING ──────────────────────────────────────────────────────────────────
-function Landing({ db, onAdmin, onDemo }) {
+export function Landing({ db, onAdmin, onDemo }) {
   const [annual, setAnnual] = useState(false);
   const [hov, setHov] = useState(null);
   const s = db.settings;
@@ -344,7 +344,7 @@ function Landing({ db, onAdmin, onDemo }) {
 }
 
 // ─── DEMO APP (editor limitado a N certificados) ──────────────────────────────
-function DemoApp({ db, onBack }) {
+export function DemoApp({ db, onBack }) {
   const limit = db.settings.demoLimit;
   const [count, setCount] = useState(0);
   const [name, setName] = useState("Juan Carlos López");
@@ -466,7 +466,7 @@ function DemoApp({ db, onBack }) {
 }
 
 // ─── ADMIN ────────────────────────────────────────────────────────────────────
-function Admin({ db, setDb, onBack }) {
+export function Admin({ db, setDb, onBack }) {
   const [section, setSection] = useState("overview");
   const [toasts, setToasts] = useState([]);
   const toast = (msg, type="success") => {
