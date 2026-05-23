@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import Verify from "./pages/Verify";
 import Admin from "./pages/Admin";
 import Landing from "./pages/Landing";
+import Demo from "./pages/Demo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/verify/:code" element={<Verify />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/app" element={<Index />} />
+            <Route path="/demo" element={<Demo />} />
             <Route path="/" element={<Landing />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
